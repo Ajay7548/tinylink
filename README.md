@@ -1,36 +1,220 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+🚀 TinyLink — Modern URL Shortener
 
-## Getting Started
+A fast, secure, and production-ready URL shortening service built with Next.js 16 (App Router), Prisma, PostgreSQL (Neon), and deployed on Vercel.
 
-First, run the development server:
+TinyLink allows users to create custom short links, track analytics, and manage URLs in a clean dashboard.
 
-```bash
+📌 Features
+🌐 Core Functionality
+
+Shorten any long URL
+
+Custom short codes (6–8 characters)
+
+Redirect via /{code}
+
+Track:
+
+Total clicks
+
+Last clicked time
+
+Creation timestamp
+
+🖥️ Dashboard
+
+Responsive table view of all links
+
+Add new short link (modal form)
+
+Delete link (modal confirmation)
+
+Clean UI with Tailwind CSS
+
+Real-time toast notifications (Sonner)
+
+🧠 Backend Validation
+
+Valid URL format
+
+Short code regex:
+
+/^[A-Za-z0-9]{6,8}$/
+
+
+Duplicate code → 409 Conflict
+
+Missing fields → 400 Bad Request
+
+🔁 Redirect Behavior
+
+/code → Redirect to original URL
+
+Increments click count
+
+Stores last-clicked timestamp
+
+Uses 302 Redirect
+
+🩺 Health Check
+
+Endpoint: /healthz
+Returns:
+
+{
+  "ok": true,
+  "version": "1.0",
+  "system": {
+    "platform": "...",
+    "arch": "...",
+    "node": "..."
+  },
+  "uptime": 123.45
+}
+
+🛠️ Tech Stack
+Layer	Technology
+Frontend	Next.js 16 • React • Tailwind CSS
+Backend	Next.js Route Handlers
+Database	Neon PostgreSQL
+ORM	Prisma
+Deploy	Vercel
+Toasts	Sonner
+📁 Project Structure
+/app
+  /api
+    /links
+      route.js
+    /links/[code]
+      route.js
+  /[code]
+      page.js
+  /Dashboard
+      page.js
+  /components
+      Navbar.jsx
+      AddModal.jsx
+      DeleteModal.jsx
+  /healthz
+      route.js
+
+/prisma
+  schema.prisma
+
+/lib
+  db.js
+
+.env
+README.md
+
+🔧 Environment Variables
+
+Inside .env:
+
+DATABASE_URL="your-neon-postgres-url"
+NEXT_PUBLIC_BASE_URL="https://your-vercel-project.vercel.app"
+
+🗄️ Prisma Setup
+
+Run once:
+
+npx prisma generate
+npx prisma db push
+
+▶️ Development Setup
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Visit:
+👉 http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🚀 Deployment (Vercel + Neon)
+🔹 1. Add Prisma Build Script
 
-## Learn More
+Edit package.json:
 
-To learn more about Next.js, take a look at the following resources:
+"scripts": {
+  "dev": "next dev",
+  "build": "prisma generate && next build",
+  "start": "next start"
+}
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+🔹 2. Add Environment Variables in Vercel
+DATABASE_URL=
+NEXT_PUBLIC_BASE_URL=
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+🔹 3. Push to GitHub
 
-## Deploy on Vercel
+Vercel auto-builds & deploys.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+📡 API Endpoints
+➤ Create Short Link
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+POST /api/links
+
+Body:
+
+{
+  "fullUrl": "https://google.com",
+  "code": "abc123"
+}
+
+
+Responses:
+
+201 Created
+
+409 Duplicate
+
+400 Invalid input
+
+➤ Get All Links
+
+GET /api/links
+
+➤ Delete Link
+
+DELETE /api/links/{code}
+
+➤ Redirect
+
+GET /{code}
+Redirects + increments clicks
+
+➤ Health Check
+
+GET /healthz
+
+🧪 What This Project Demonstrates
+
+Next.js full-stack capability
+
+API + validation logic
+
+Prisma ORM skills
+
+Database schema design
+
+Client-side modals + UX
+
+Production deployment skills
+
+Error-handling and logs
+
+Clean, minimal, professional UI
+
+Perfect for:
+
+✔️ Resume
+✔️ Portfolio
+✔️ Interview showcase
+✔️ Real-world deployment experience
+
+📜 License
+
+MIT License © 2025 — Ajay Kumar Mourya
+
+✅ Done.
+
+Your complete README is above — fully ready to COPY & PASTE.
