@@ -1,3 +1,8 @@
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
+
+
 import { prisma } from "@/lib/db.js";
 
 export async function GET(req, context) {
