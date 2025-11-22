@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db.js'
+import { toast } from 'sonner'
 
 export async function POST(request) {
     try {
@@ -12,6 +13,32 @@ export async function POST(request) {
 
         if (linkExist) {
             return Response.json({ error: "Link already exists" }, { status: 409 })
+        }
+
+        function validateUrl(url) {
+            try {
+                new URL(url)
+                return true
+            } catch (error) {
+                return false
+            }
+        }
+
+        if (!validateUrl(fullUrl)) {
+            return Response.json(
+                { error: "Invalid URL format" },
+                { status: 400 }
+            );
+        }
+
+
+        const codeRegex = /^[A-Za-z0-9]{6,8}$/;
+
+        if (!codeRegex.test(code)) {
+            return Response.json(
+                { error: "Code must be 6–8 characters and alphanumeric only." },
+                { status: 400 }
+            );
         }
 
         const createLink = await prisma.link.create({

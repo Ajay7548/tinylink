@@ -1,83 +1,73 @@
-import { prisma } from '@/lib/db.js'
-import Link from 'next/link'
+import { prisma } from '@/lib/db';
+import Link from 'next/link';
+
+
 
 const StatePage = async ({ params }) => {
-    const { code } = await params
+  const { code } = await params;
 
-    //fetch link
+  const link = await prisma.link.findUnique({
+    where: { code },
+  });
 
-    const link = await prisma.link.findUnique({
-        where: { code }
-    })
-
-    if (!link) {
-        return (
-            <div className='p-10 text-center text-red-600'>
-                <h1>Link not Found</h1>
-            </div>
-        )
-    }
-
-    // async function handleDelete() {
-    //     const res = await fetch(`/api/links/${code}`, {
-    //         method: "DELETE",
-    //     });
-
-    //     if (!res.ok) {
-    //         alert("Failed to delete.");
-    //         return;
-    //     }
-
-    //     alert("Deleted successfully!");
-    // }
-
-
-    const shortUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${link.code}`
-
+  if (!link) {
     return (
-        <div className='max-w-xl mx-auto p-6'>
-            <h1 className='text-2xl font-bold mb-4'>Link Stats</h1>
+      <div className="p-10 text-center text-red-600">
+        <h1>Link Not Found</h1>
+      </div>
+    );
+  }
 
-            <div className='border p-5 rounded-lg space-y-3'>
+  const shortUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${link.code}`;
 
-                <div>
-                    <p className='text-gray-500 text-sm'>Short URL:</p>
-                    <Link href={`/${link.code}`} className='text-blue-600 underline'>
-                        {shortUrl}
-                    </Link>
-                </div>
+  return (
+    <div className="w-full mx-auto p-6 pt-20 bg-linear-to-t from-black to-gray-800">
+      <h1 className="text-2xl font-bold text-center mb-4">Link Stats</h1>
 
-                <div>
-                    <p className='text-gray-500 text-sm'>Original URL:</p>
-                    <p>{link.fullUrl}</p>
-                </div>
-
-                <div>
-                    <p className='text-gray-500 text-sm'>Clicks:</p>
-                    <p className='font-semibold'>{link.clicks}</p>
-                </div>
-
-                <div>
-                    <p className='text-gray-500 text-sm'>Last Clicked:</p>
-                    <p>{link.lastClickedAt ? link.lastClickedAt.toString() : "Never"}</p>
-                </div>
-
-                <div>
-                    <p className='text-gray-500 text-sm'>Created:</p>
-                    <p>{link.createdAt.toString()}</p>
-                </div>
-
-                {/* delete btn  */}
-                <form action={`/api/links/${code}`} method='POST'>
-                    <input type="hidden" name='method' value='DELETE' />
-                    <button className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-                        Delete Link
-                    </button>
-                </form>
-            </div>
+      <div className="md:w-1/2  mx-auto border p-5 rounded-lg space-y-3">
+        
+        <div>
+          <p className="text-gray-500 text-sm">Short code:</p>
+          <Link href={`/${link.code}`} className="text-blue-600 underline">
+            {shortUrl}
+          </Link>
         </div>
-    )
 
-}
+        <div className='w-full'>
+          <p className="text-gray-500  text-sm">Target URL:</p>
+          <p className=' wrap-break-word'>{link.fullUrl}</p>
+        </div>
 
-export default StatePage
+        <div>
+          <p className="text-gray-500 text-sm">Total Clicks:</p>
+          <p className="font-semibold">{link.clicks}</p>
+        </div>
+
+        <div>
+          <p className="text-gray-500 text-sm">Last Clicked time:</p>
+          <p>{link.lastClickedAt ? link.lastClickedAt.toString() : "Never"}</p>
+        </div>
+
+        <div>
+          <p className="text-gray-500 text-sm">Created:</p>
+          <p>{link.createdAt.toString()}</p>
+        </div>
+
+        {/* Proper Delete Button */}
+        <form action={async () => { 
+          "use server"; 
+          await prisma.link.delete({ where: { code } }); 
+        }}>
+          <button
+            className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          >
+            Delete Link
+          </button>
+        </form>
+
+      </div>
+    </div>
+  );
+};
+
+export default StatePage;
